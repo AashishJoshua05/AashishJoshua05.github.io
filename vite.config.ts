@@ -8,4 +8,8 @@ export default defineConfig({
   optimizeDeps: {
     exclude: ['lucide-react'],
   },
+  build: {
+    minify: "esbuild", // Use esbuild for faster builds
+    chunkSizeWarningLimit: 500, // Split code for faster loading
+  },
 });

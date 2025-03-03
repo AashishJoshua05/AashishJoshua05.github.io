@@ -1,7 +1,8 @@
 import { memo, useCallback, useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import Particles, { initParticlesEngine } from "@tsparticles/react";
-import { loadFull } from "tsparticles";
+// import { loadFull } from "tsparticles";
+import { loadSlim } from "@tsparticles/slim"; 
 
 const BackgroundAnimation = () => {
   const [init, setInit] = useState(false);
@@ -10,7 +11,7 @@ const BackgroundAnimation = () => {
   useEffect(() => {
     if (!init) {
       initParticlesEngine(async (engine) => {
-        await loadFull(engine);
+        await loadSlim(engine);
         console.log("Loading Particles");
       }).then(() => {
         console.log("Particles loaded");
@@ -38,7 +39,7 @@ const BackgroundAnimation = () => {
             fullScreen: { enable: false, zIndex: 0 },
             particles: {
               number: {
-                value: 80,
+                value:40,
                 density: { enable: true },
               },
               color: { value: ["#ffffff", "#915EFF", "#1E1E2E"] },
@@ -51,7 +52,7 @@ const BackgroundAnimation = () => {
               },
               move: {
                 enable: true,
-                speed: 1.5,
+                speed: 2,
                 direction: "none",
                 random: false,
                 straight: false,
