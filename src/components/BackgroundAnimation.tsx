@@ -12,16 +12,13 @@ const BackgroundAnimation = () => {
     if (!init) {
       initParticlesEngine(async (engine) => {
         await loadSlim(engine);
-        console.log("Loading Particles");
       }).then(() => {
-        console.log("Particles loaded");
         setInit(true);
       });
     }
   }, [init]);
   
   const particlesLoaded = useCallback(async () => {
-    console.log("Particles have loaded successfully");
   }, []);
 
   return (
