@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { ExternalLink, Github, Code } from "lucide-react";
+import { Code } from "lucide-react";
 
 interface Project {
   id: number;
@@ -8,8 +8,8 @@ interface Project {
   description: string;
   image: string;
   technologies: string[];
-  github: string;
-  demo: string;
+  // github: string;
+  // demo: string;
   category: "ai" | "fullstack" | "frontend" | "automation";
 }
 
@@ -25,7 +25,7 @@ const Projects = () => {
       description:
         "A FastAPI-based RAG pipeline that extracts, chunks, and retrieves relevant information from large PDFs with high accuracy.",
       image:
-        "https://blogs.nvidia.com/blog/what-is-retrieval-augmented-generation/",
+        "/RAG.JPEG",
       technologies: [
         "Python",
         "FastAPI",
@@ -34,8 +34,8 @@ const Projects = () => {
         "LangChain",
         "AWS",
       ],
-      github: "https://github.com",
-      demo: "https://demo.com",
+      // github: "https://github.com",
+      // demo: "https://demo.com",
       category: "ai",
     },
     {
@@ -44,7 +44,7 @@ const Projects = () => {
       description:
         "A structured AI agent framework using LangGraph and LangChain, enabling intelligent decision-making and automation through inter-agent communication.",
       image:
-        "https://images.unsplash.com/photo-1655723840893-45bcb3c90712?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
+        "/AgentsImage.jpg",
       technologies: [
         "Python",
         "LangGraph",
@@ -53,8 +53,8 @@ const Projects = () => {
         "FastAPI",
         "AWS",
       ],
-      github: "https://github.com",
-      demo: "https://demo.com",
+      // github: "https://github.com",
+      // demo: "https://demo.com",
       category: "ai",
     },
     {
@@ -65,8 +65,8 @@ const Projects = () => {
       image:
         "https://images.unsplash.com/photo-1594764657037-19a84a31728f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
       technologies: ["Python", "FastAPI", "Gmail API", "AWS", "Hugging Face"],
-      github: "https://github.com",
-      demo: "https://demo.com",
+      // github: "https://github.com",
+      // demo: "https://demo.com",
       category: "automation",
     },
     {
@@ -77,8 +77,8 @@ const Projects = () => {
       image:
         "https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
       technologies: ["React", "Framer Motion", "Tailwind CSS", "ShadCN"],
-      github: "https://github.com",
-      demo: "https://demo.com",
+      // github: "https://github.com",
+      // demo: "https://demo.com",
       category: "frontend",
     },
   ];
@@ -211,7 +211,7 @@ const Projects = () => {
                   ))}
                 </div>
 
-                <div className="flex gap-4">
+                {/* <div className="flex gap-4">
                   <motion.a
                     href={project.github}
                     target="_blank"
@@ -235,7 +235,7 @@ const Projects = () => {
                     <ExternalLink size={18} />
                     <span>Live Demo</span>
                   </motion.a>
-                </div>
+                </div> */}
               </div>
             </motion.div>
           ))}
