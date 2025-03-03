@@ -25,7 +25,7 @@ const Projects = () => {
       description:
         "A FastAPI-based RAG pipeline that extracts, chunks, and retrieves relevant information from large PDFs with high accuracy.",
       image:
-        "/RAG.JPEG",
+        "/RAG.jpg",
       technologies: [
         "Python",
         "FastAPI",
@@ -63,7 +63,7 @@ const Projects = () => {
       description:
         "A Gmail API-based email monitoring service integrated into a FastAPI backend, enabling automated email processing and response generation.",
       image:
-        "https://images.unsplash.com/photo-1594764657037-19a84a31728f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
+        "EmailAutomation.avif",
       technologies: ["Python", "FastAPI", "Gmail API", "AWS", "Hugging Face"],
       // github: "https://github.com",
       // demo: "https://demo.com",
