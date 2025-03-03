@@ -10,28 +10,29 @@ interface Project {
   technologies: string[];
   github: string;
   demo: string;
-  category: "ai" | "fullstack" | "frontend";
+  category: "ai" | "fullstack" | "frontend" | "automation";
 }
 
 const Projects = () => {
   const [activeFilter, setActiveFilter] = useState<
-    "all" | "ai" | "fullstack" | "frontend"
+    "all" | "ai" | "fullstack" | "frontend" | "automation"
   >("all");
 
   const projects: Project[] = [
     {
       id: 1,
-      title: "AI-Powered Content Generator",
+      title: "AI-Powered Document Retrieval System",
       description:
-        "A web application that uses GPT-4 to generate high-quality content for blogs, social media, and marketing materials.",
+        "A FastAPI-based RAG pipeline that extracts, chunks, and retrieves relevant information from large PDFs with high accuracy.",
       image:
-        "https://images.unsplash.com/photo-1677442135968-6276536b3e02?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
+        "https://images.unsplash.com/photo-1581092335561-1e7f9a8d4d90?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
       technologies: [
-        "React",
-        "Node.js",
-        "OpenAI API",
-        "MongoDB",
-        "Tailwind CSS",
+        "Python",
+        "FastAPI",
+        "FAISS",
+        "Hugging Face",
+        "LangChain",
+        "AWS",
       ],
       github: "https://github.com",
       demo: "https://demo.com",
@@ -39,36 +40,43 @@ const Projects = () => {
     },
     {
       id: 2,
-      title: "E-commerce Platform",
+      title: "Hierarchical Multi-Agent System",
       description:
-        "A full-featured e-commerce platform with product management, cart functionality, payment processing, and order tracking.",
+        "A structured AI agent framework using LangGraph and LangChain, enabling intelligent decision-making and automation through inter-agent communication.",
       image:
-        "https://images.unsplash.com/photo-1661956602944-249bcd04b63f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
-      technologies: ["Next.js", "TypeScript", "Stripe", "PostgreSQL", "Prisma"],
-      github: "https://github.com",
-      demo: "https://demo.com",
-      category: "fullstack",
-    },
-    {
-      id: 3,
-      title: "Intelligent Document Analyzer",
-      description:
-        "An application that uses machine learning to extract, analyze, and categorize information from uploaded documents.",
-      image:
-        "https://images.unsplash.com/photo-1633419461186-7d40a38105ec?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
-      technologies: ["Python", "FastAPI", "TensorFlow", "React", "AWS"],
+        "https://images.unsplash.com/photo-1655723840893-45bcb3c90712?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
+      technologies: [
+        "Python",
+        "LangGraph",
+        "LangChain",
+        "Hugging Face",
+        "FastAPI",
+        "AWS",
+      ],
       github: "https://github.com",
       demo: "https://demo.com",
       category: "ai",
     },
     {
-      id: 4,
-      title: "Portfolio Website Template",
+      id: 3,
+      title: "AI-Powered Email Monitoring System",
       description:
-        "A customizable portfolio website template for developers with smooth animations and responsive design.",
+        "A Gmail API-based email monitoring service integrated into a FastAPI backend, enabling automated email processing and response generation.",
       image:
-        "https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
-      technologies: ["React", "Framer Motion", "Tailwind CSS", "Vite"],
+        "https://images.unsplash.com/photo-1594764657037-19a84a31728f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
+      technologies: ["Python", "FastAPI", "Gmail API", "AWS", "Hugging Face"],
+      github: "https://github.com",
+      demo: "https://demo.com",
+      category: "automation",
+    },
+    {
+      id: 4,
+      title: "Personal Portfolio with Interactive UI",
+      description:
+        "A visually engaging and performant portfolio website featuring floating particle effects, a curved timeline for experience, and smooth animations.",
+      image:
+        "https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
+      technologies: ["React", "Framer Motion", "Tailwind CSS", "ShadCN"],
       github: "https://github.com",
       demo: "https://demo.com",
       category: "frontend",
@@ -151,6 +159,18 @@ const Projects = () => {
             whileTap={{ scale: 0.95 }}
           >
             Frontend
+          </motion.button>
+          <motion.button
+            className={`px-4 py-2 rounded-full ${
+              activeFilter === "automation"
+                ? "bg-primary text-white"
+                : "bg-dark-lighter text-light/80 hover:bg-dark-light"
+            } transition-colors`}
+            onClick={() => setActiveFilter("automation")}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            automation
           </motion.button>
         </motion.div>
 

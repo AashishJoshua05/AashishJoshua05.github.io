@@ -56,7 +56,7 @@ const Footer = () => {
                 href="https://www.instagram.com/sup_imaashish/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-3 rounded-lg bg-dark-lighter hover:bg-primary/20 transition-colors text-light hover:text-primary"
+                className="p-2 rounded-lg bg-dark-lighter hover:bg-primary/20 transition-colors text-light hover:text-primary"
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
               >

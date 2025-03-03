@@ -15,7 +15,7 @@ const Experience = () => {
     {
       id: 1,
       company: "AidenAI",
-      position: "Senior AI Engineer",
+      position: "Product Engineer",
       period: "2024 - Present",
       description: [
         "Developed and optimized a Retrieval-Augmented Generation (RAG) pipeline, improving document retrieval accuracy for large-scale PDFs",
@@ -99,9 +99,9 @@ const Experience = () => {
 
                 <ul className="space-y-2 mb-4">
                   {exp.description.map((item, i) => (
-                    <li key={i} className="text-light/80 flex items-start">
+                    <li key={i} className="text-light/80 flex items-start ">
                       <span className="inline-block w-1.5 h-1.5 rounded-full bg-primary mt-2 mr-2"></span>
-                      <span>{item}</span>
+                      <span className="flex text-left">{item}</span>
                     </li>
                   ))}
                 </ul>
