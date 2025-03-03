@@ -249,7 +249,7 @@ const Projects = () => {
           transition={{ duration: 0.5 }}
         >
           <motion.a
-            href="https://github.com"
+            href="https://github.com/AashishJoshua05"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 text-primary hover:text-primary-light transition-colors"
