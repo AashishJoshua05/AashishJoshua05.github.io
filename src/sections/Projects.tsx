@@ -25,7 +25,7 @@ const Projects = () => {
       description:
         "A FastAPI-based RAG pipeline that extracts, chunks, and retrieves relevant information from large PDFs with high accuracy.",
       image:
-        "https://images.unsplash.com/photo-1581092335561-1e7f9a8d4d90?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
+        "https://blogs.nvidia.com/blog/what-is-retrieval-augmented-generation/",
       technologies: [
         "Python",
         "FastAPI",

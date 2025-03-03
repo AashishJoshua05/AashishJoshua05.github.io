@@ -48,7 +48,7 @@ const About = () => {
                 transition={{ duration: 0.3 }}
               >
                 <img
-                  src="src\assets\Vakesy.JPEG"
+                  src="/Vakesy.JPEG"
                   alt="Profile"
                   className="w-full h-full object-fit"
                 />
