@@ -1,265 +1,377 @@
-import { useState } from "react";
-import { motion } from "framer-motion";
-import { Code } from "lucide-react";
+import { useRef, useState } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useGSAP } from "@gsap/react";
+import SplitText from "../components/ui/SplitText";
+import GradientText from "../components/ui/GradientText";
+import { useReducedMotion } from "../hooks/useReducedMotion";
+
+gsap.registerPlugin(ScrollTrigger);
 
 interface Project {
-  id: number;
   title: string;
+  category: string;
   description: string;
-  image: string;
-  technologies: string[];
-  // github: string;
-  // demo: string;
-  category: "ai" | "fullstack" | "frontend" | "automation";
+  tech: string[];
+  metric: string;
+  metricLabel: string;
+  gradientFrom: string;
+  gradientTo: string;
 }
 
+const projects: Project[] = [
+  {
+    title: "Resume Ingestion Pipeline",
+    category: "AI · Data Pipeline",
+    description:
+      "Built on Azure Databricks processing resumes at scale with watermark-based incremental discovery — cut re-processing by 65% and manual sourcing by 80%.",
+    tech: ["Python", "Azure Databricks", "PostgreSQL", "Qdrant"],
+    metric: "10K+",
+    metricLabel: "resumes processed daily",
+    gradientFrom: "#8B5CF6",
+    gradientTo: "#6366f1",
+  },
+  {
+    title: "Multi-Agent System on MCP",
+    category: "AI · Architecture",
+    description:
+      "Designed so all 6 personas share a single tool server. Eliminated cross-persona context bleed and cut average LLM token usage by 20%.",
+    tech: ["Python", "MCP", "LangChain", "LangGraph", "FastAPI"],
+    metric: "6",
+    metricLabel: "AI personas, one tool server",
+    gradientFrom: "#06b6d4",
+    gradientTo: "#8B5CF6",
+  },
+  {
+    title: "Candidate Ranking Engine",
+    category: "AI · Search & Retrieval",
+    description:
+      "Built on Qdrant with four embedding vectors and LLM re-ranking — delivering real-time retrieval at ~50 concurrent tenant queries.",
+    tech: ["Python", "Qdrant", "FastAPI", "LLM Re-ranking"],
+    metric: "<2s",
+    metricLabel: "P95 retrieval latency",
+    gradientFrom: "#f59e0b",
+    gradientTo: "#ef4444",
+  },
+  {
+    title: "Cinematic Portfolio",
+    category: "Frontend · Design",
+    description:
+      "Scroll-driven animations, custom cursor, horizontal scroll, smooth transitions, and grain overlays — built to feel like an experience, not a page.",
+    tech: ["React", "GSAP", "Tailwind", "TypeScript", "Framer Motion"],
+    metric: "∞",
+    metricLabel: "scroll-driven animations",
+    gradientFrom: "#10b981",
+    gradientTo: "#06b6d4",
+  },
+];
+
+const ReducedMotionFallback = () => (
+  <section id="projects" className="bg-dark">
+    <div className="max-w-4xl mx-auto px-6">
+      <div className="py-24 border-b border-white/5">
+        <span className="text-xs uppercase tracking-[0.3em] text-white/30">
+          Selected Work
+        </span>
+      </div>
+      {projects.map((project, i) => (
+        <div key={project.title} className="py-32 border-b border-white/5">
+          <span className="text-xs uppercase tracking-[0.3em] text-white/30 mb-6 block">
+            {project.category}
+          </span>
+          <h3 className="text-4xl md:text-6xl font-heading font-bold text-white leading-tight mb-8">
+            {project.title}
+          </h3>
+          <div className="w-16 h-px bg-white/10 mb-8" />
+          <p className="text-lg md:text-xl text-white/50 leading-relaxed mb-10 max-w-xl">
+            {project.description}
+          </p>
+          <div className="flex items-baseline gap-4 mb-10">
+            <GradientText
+              className="text-5xl md:text-6xl font-heading font-bold"
+              from={project.gradientFrom}
+              to={project.gradientTo}
+            >
+              {project.metric}
+            </GradientText>
+            <span className="text-lg text-white/30">{project.metricLabel}</span>
+          </div>
+          <div className="text-xs uppercase tracking-wider text-white/20">
+            {project.tech.join(" / ")}
+          </div>
+          <div className="mt-4 text-xs text-white/10">
+            {String(i + 1).padStart(2, "0")} / {String(projects.length).padStart(2, "0")}
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+);
+
 const Projects = () => {
-  const [activeFilter, setActiveFilter] = useState<
-    "all" | "ai" | "fullstack" | "frontend" | "automation"
-  >("all");
+  const reducedMotion = useReducedMotion();
+  const sectionRef = useRef<HTMLElement>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
+  const counterRef = useRef<HTMLSpanElement>(null);
+  const [, setActiveIndex] = useState(0);
 
-  const projects: Project[] = [
-    {
-      id: 1,
-      title: "AI-Powered Document Retrieval System",
-      description:
-        "A FastAPI-based RAG pipeline that extracts, chunks, and retrieves relevant information from large PDFs with high accuracy.",
-      image:
-        "/RAG.jpg",
-      technologies: [
-        "Python",
-        "FastAPI",
-        "FAISS",
-        "Hugging Face",
-        "LangChain",
-        "AWS",
-      ],
-      // github: "https://github.com",
-      // demo: "https://demo.com",
-      category: "ai",
-    },
-    {
-      id: 2,
-      title: "Hierarchical Multi-Agent System",
-      description:
-        "A structured AI agent framework using LangGraph and LangChain, enabling intelligent decision-making and automation through inter-agent communication.",
-      image:
-        "/AgentsImage.jpg",
-      technologies: [
-        "Python",
-        "LangGraph",
-        "LangChain",
-        "Hugging Face",
-        "FastAPI",
-        "AWS",
-      ],
-      // github: "https://github.com",
-      // demo: "https://demo.com",
-      category: "ai",
-    },
-    {
-      id: 3,
-      title: "AI-Powered Email Monitoring System",
-      description:
-        "A Gmail API-based email monitoring service integrated into a FastAPI backend, enabling automated email processing and response generation.",
-      image:
-        "EmailAutomation.avif",
-      technologies: ["Python", "FastAPI", "Gmail API", "AWS", "Hugging Face"],
-      // github: "https://github.com",
-      // demo: "https://demo.com",
-      category: "automation",
-    },
-    {
-      id: 4,
-      title: "Personal Portfolio with Interactive UI",
-      description:
-        "A visually engaging and performant portfolio website featuring floating particle effects, a curved timeline for experience, and smooth animations.",
-      image:
-        "https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
-      technologies: ["React", "Framer Motion", "Tailwind CSS", "ShadCN"],
-      // github: "https://github.com",
-      // demo: "https://demo.com",
-      category: "frontend",
-    },
-  ];
+  useGSAP(
+    () => {
+      if (reducedMotion) return;
 
-  const filteredProjects =
-    activeFilter === "all"
-      ? projects
-      : projects.filter((project) => project.category === activeFilter);
+      const track = trackRef.current;
+      const section = sectionRef.current;
+      if (!track || !section) return;
+
+      const slides = track.querySelectorAll<HTMLElement>(".project-slide");
+      const totalDistance = (slides.length - 1) * window.innerWidth;
+
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: section,
+          pin: true,
+          scrub: 1,
+          start: "top top",
+          end: "+=" + slides.length * window.innerWidth,
+          onUpdate: (self) => {
+            const idx = Math.min(
+              Math.round(self.progress * (slides.length - 1)),
+              slides.length - 1
+            );
+            setActiveIndex(idx);
+            if (counterRef.current) {
+              counterRef.current.textContent = String(idx + 1).padStart(2, "0");
+            }
+          },
+        },
+      });
+
+      tl.to(track, {
+        x: -totalDistance,
+        ease: "none",
+      });
+
+      slides.forEach((slide) => {
+        const category = slide.querySelector(".slide-category");
+        const titleWrap = slide.querySelector(".slide-title");
+        const line = slide.querySelector(".slide-line");
+        const desc = slide.querySelector(".slide-desc");
+        const metric = slide.querySelector(".slide-metric");
+        const techStack = slide.querySelector(".slide-tech");
+
+        if (category) {
+          gsap.fromTo(
+            category,
+            { opacity: 0 },
+            {
+              opacity: 1,
+              duration: 0.6,
+              ease: "power2.out",
+              scrollTrigger: {
+                trigger: slide,
+                containerAnimation: tl,
+                start: "left 75%",
+                end: "left 55%",
+                scrub: 1,
+              },
+            }
+          );
+        }
+
+        if (titleWrap) {
+          gsap.fromTo(
+            titleWrap,
+            { opacity: 0, y: 30 },
+            {
+              opacity: 1,
+              y: 0,
+              duration: 0.8,
+              ease: "power3.out",
+              scrollTrigger: {
+                trigger: slide,
+                containerAnimation: tl,
+                start: "left 72%",
+                end: "left 50%",
+                scrub: 1,
+              },
+            }
+          );
+        }
+
+        if (line) {
+          gsap.fromTo(
+            line,
+            { scaleX: 0 },
+            {
+              scaleX: 1,
+              duration: 0.6,
+              ease: "power2.out",
+              scrollTrigger: {
+                trigger: slide,
+                containerAnimation: tl,
+                start: "left 65%",
+                end: "left 45%",
+                scrub: 1,
+              },
+            }
+          );
+        }
+
+        if (desc) {
+          gsap.fromTo(
+            desc,
+            { opacity: 0, y: 20 },
+            {
+              opacity: 1,
+              y: 0,
+              duration: 0.6,
+              ease: "power2.out",
+              scrollTrigger: {
+                trigger: slide,
+                containerAnimation: tl,
+                start: "left 60%",
+                end: "left 40%",
+                scrub: 1,
+              },
+            }
+          );
+        }
+
+        if (metric) {
+          gsap.fromTo(
+            metric,
+            { opacity: 0, scale: 0.9 },
+            {
+              opacity: 1,
+              scale: 1,
+              duration: 0.6,
+              ease: "power2.out",
+              scrollTrigger: {
+                trigger: slide,
+                containerAnimation: tl,
+                start: "left 55%",
+                end: "left 35%",
+                scrub: 1,
+              },
+            }
+          );
+        }
+
+        if (techStack) {
+          gsap.fromTo(
+            techStack,
+            { opacity: 0 },
+            {
+              opacity: 1,
+              duration: 0.6,
+              ease: "power2.out",
+              scrollTrigger: {
+                trigger: slide,
+                containerAnimation: tl,
+                start: "left 50%",
+                end: "left 30%",
+                scrub: 1,
+              },
+            }
+          );
+        }
+      });
+    },
+    { scope: sectionRef, dependencies: [reducedMotion] }
+  );
+
+  if (reducedMotion) return <ReducedMotionFallback />;
 
   return (
-    <section id="projects" className="py-20">
-      <div className="container-custom">
-        <motion.div
-          className="text-center mb-16"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-        >
-          <h2 className="section-title">My Projects</h2>
-          <p className="text-light/70 max-w-2xl mx-auto mt-4">
-            Here are some of my recent projects that showcase my skills in AI
-            integration, full stack development, and frontend design.
-          </p>
-        </motion.div>
+    <section
+      id="projects"
+      ref={sectionRef}
+      className="relative min-h-screen bg-dark overflow-hidden"
+    >
+      <div className="absolute top-8 left-0 right-0 z-20 px-8 md:px-16 flex items-center justify-between">
+        <span className="text-xs uppercase tracking-[0.3em] text-white/30">
+          Selected Work
+        </span>
+        <span className="text-xs uppercase tracking-[0.3em] text-white/30">
+          <span ref={counterRef} className="text-white/50">01</span>
+          {" — "}
+          {String(projects.length).padStart(2, "0")}
+        </span>
+      </div>
 
-        <motion.div
-          className="flex flex-wrap justify-center gap-4 mb-12"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-        >
-          <motion.button
-            className={`px-4 py-2 rounded-full ${
-              activeFilter === "all"
-                ? "bg-primary text-white"
-                : "bg-dark-lighter text-light/80 hover:bg-dark-light"
-            } transition-colors`}
-            onClick={() => setActiveFilter("all")}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
+      <div
+        ref={trackRef}
+        className="flex h-screen"
+        style={{ width: `${projects.length * 100}vw` }}
+      >
+        {projects.map((project, i) => (
+          <div
+            key={project.title}
+            className="project-slide relative flex-shrink-0 w-screen h-screen flex items-center"
           >
-            All Projects
-          </motion.button>
-          <motion.button
-            className={`px-4 py-2 rounded-full ${
-              activeFilter === "ai"
-                ? "bg-primary text-white"
-                : "bg-dark-lighter text-light/80 hover:bg-dark-light"
-            } transition-colors`}
-            onClick={() => setActiveFilter("ai")}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            AI Projects
-          </motion.button>
-          <motion.button
-            className={`px-4 py-2 rounded-full ${
-              activeFilter === "fullstack"
-                ? "bg-primary text-white"
-                : "bg-dark-lighter text-light/80 hover:bg-dark-light"
-            } transition-colors`}
-            onClick={() => setActiveFilter("fullstack")}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            Full Stack
-          </motion.button>
-          <motion.button
-            className={`px-4 py-2 rounded-full ${
-              activeFilter === "frontend"
-                ? "bg-primary text-white"
-                : "bg-dark-lighter text-light/80 hover:bg-dark-light"
-            } transition-colors`}
-            onClick={() => setActiveFilter("frontend")}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            Frontend
-          </motion.button>
-          <motion.button
-            className={`px-4 py-2 rounded-full ${
-              activeFilter === "automation"
-                ? "bg-primary text-white"
-                : "bg-dark-lighter text-light/80 hover:bg-dark-light"
-            } transition-colors`}
-            onClick={() => setActiveFilter("automation")}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            automation
-          </motion.button>
-        </motion.div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
-          {filteredProjects.map((project, index) => (
-            <motion.div
-              key={project.id}
-              className="bg-dark-light rounded-xl overflow-hidden"
-              initial={{ opacity: 0, y: 50 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-              whileHover={{ y: -5 }}
+            <span
+              className="absolute -top-6 -left-4 text-[200px] md:text-[280px] font-heading font-bold leading-none select-none pointer-events-none"
+              style={{
+                color: "transparent",
+                WebkitTextStroke: "1px rgba(255,255,255,0.06)",
+              }}
             >
-              <div className="relative overflow-hidden h-60">
-                <img
-                  src={project.image}
-                  alt={project.title}
-                  className="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
+              {String(i + 1).padStart(2, "0")}
+            </span>
+
+            <div className="relative z-10 px-8 md:px-16 lg:px-24 max-w-3xl">
+              <span className="slide-category text-xs uppercase tracking-[0.3em] text-white/30 mb-6 block opacity-0">
+                {project.category}
+              </span>
+
+              <div className="slide-title mb-8 opacity-0">
+                <SplitText
+                  text={project.title}
+                  className="text-4xl md:text-6xl font-heading font-bold text-white leading-tight"
+                  splitBy="words"
+                  stagger={0.05}
+                  trigger={false}
+                  animateFrom={{ opacity: 1, y: 0 }}
+                  animateTo={{}}
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-dark to-transparent opacity-70"></div>
-                <div className="absolute bottom-0 left-0 right-0 p-4">
-                  <h3 className="text-xl font-bold">{project.title}</h3>
-                </div>
               </div>
 
-              <div className="p-6">
-                <p className="text-light/80 mb-4">{project.description}</p>
+              <div
+                className="slide-line w-16 h-px bg-white/10 mb-8 origin-left"
+                style={{ transform: "scaleX(0)" }}
+              />
 
-                <div className="flex flex-wrap gap-2 mb-6">
-                  {project.technologies.map((tech, i) => (
-                    <span
-                      key={i}
-                      className="px-3 py-1 bg-dark-lighter rounded-full text-xs font-medium text-primary"
-                    >
-                      {tech}
-                    </span>
-                  ))}
-                </div>
+              <p className="slide-desc text-lg md:text-xl text-white/50 leading-relaxed mb-10 max-w-xl opacity-0">
+                {project.description}
+              </p>
 
-                {/* <div className="flex gap-4">
-                  <motion.a
-                    href={project.github}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-2 text-light/80 hover:text-primary transition-colors"
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                  >
-                    <Github size={18} />
-                    <span>Code</span>
-                  </motion.a>
-
-                  <motion.a
-                    href={project.demo}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-2 text-light/80 hover:text-primary transition-colors"
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                  >
-                    <ExternalLink size={18} />
-                    <span>Live Demo</span>
-                  </motion.a>
-                </div> */}
+              <div className="slide-metric flex items-baseline gap-4 mb-10 opacity-0">
+                <GradientText
+                  className="text-5xl md:text-6xl font-heading font-bold"
+                  from={project.gradientFrom}
+                  to={project.gradientTo}
+                >
+                  {project.metric}
+                </GradientText>
+                <span className="text-lg text-white/30">{project.metricLabel}</span>
               </div>
-            </motion.div>
-          ))}
-        </div>
 
-        <motion.div
-          className="text-center mt-12"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-        >
-          <motion.a
-            href="https://github.com/AashishJoshua05"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 text-primary hover:text-primary-light transition-colors"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            <Code size={20} />
-            <span>View more projects on GitHub</span>
-          </motion.a>
-        </motion.div>
+              <div className="slide-tech text-xs uppercase tracking-wider text-white/20 opacity-0">
+                {project.tech.join(" / ")}
+              </div>
+            </div>
+
+            <span
+              className="absolute bottom-12 right-8 text-xs uppercase tracking-[0.5em] text-white/10 select-none pointer-events-none"
+              style={{
+                writingMode: "vertical-rl",
+                transform: "rotate(180deg)",
+              }}
+            >
+              SCROLL &rarr;
+            </span>
+          </div>
+        ))}
       </div>
     </section>
   );

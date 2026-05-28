@@ -1,124 +1,262 @@
-import { motion } from "framer-motion";
-import { Briefcase, Calendar } from "lucide-react";
+import { useRef, useEffect, useState } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useGSAP } from "@gsap/react";
+import GradientText from "../components/ui/GradientText";
+import SpotlightCard from "../components/ui/SpotlightCard";
 
-interface Experience {
-  id: number;
+gsap.registerPlugin(ScrollTrigger);
+
+interface TimelineEntry {
+  title: string;
   company: string;
-  position: string;
   period: string;
-  description: string[];
-  technologies: string[];
+  subtitle: string;
+  achievements: string[];
+  tech: string[];
 }
 
+const timeline: TimelineEntry[] = [
+  {
+    title: "Product Engineer",
+    company: "AidenAI",
+    period: "Nov 2024 - Present",
+    subtitle: "Promoted from Intern · Hyderabad, India",
+    achievements: [
+      "Built resume ingestion pipeline on Azure Databricks processing 10K+ resumes/day",
+      "Designed multi-agent system on MCP with 6 personas sharing a single tool server",
+      "Built candidate ranking engine on Qdrant with sub-2-second P95 retrieval",
+      "Implemented PostgreSQL multi-tenancy using schema-per-tenant isolation",
+    ],
+    tech: [
+      "Python",
+      "FastAPI",
+      "Qdrant",
+      "PostgreSQL",
+      "Azure",
+      "Docker",
+      "MCP",
+      "LangChain",
+    ],
+  },
+  {
+    title: "Product Engineer Intern",
+    company: "AidenAI",
+    period: "Aug 2024 - Oct 2024",
+    subtitle: "Converted to full-time after 3-month internship · Remote",
+    achievements: [
+      "Conducted POCs across AI tools and frameworks to evaluate LLM integration options",
+      "Rebuilt frontend in React with code-splitting, lazy loading — Lighthouse 72 to 96",
+    ],
+    tech: ["React", "Tailwind", "TypeScript"],
+  },
+  {
+    title: "B.Tech in AI",
+    company: "Mahindra University",
+    period: "Aug 2020 - May 2024",
+    subtitle: "Coursework: ML, Deep Learning, NLP, DSA, Distributed Systems",
+    achievements: [],
+    tech: [],
+  },
+];
+
 const Experience = () => {
-  const experiences: Experience[] = [
-    {
-      id: 1,
-      company: "AidenAI",
-      position: "Product Engineer",
-      period: "2024 - Present",
-      description: [
-        "Developed and optimized a Retrieval-Augmented Generation (RAG) pipeline, improving document retrieval accuracy for large-scale PDFs",
-        "Built a hierarchical multi-agent system using LangGraph and LangChain, enabling structured, chat-like interactions for AI-driven workflows",
-        "Implemented a FastAPI-based service for extracting and highlighting named entities (NER) from PDFs using advanced NLP techniques",
-        "Mentored junior engineers, conducted rigorous code reviews, and established best practices for AI development and deployment",
-      ],
-      technologies: [
-        "Python",
-        "Hugging Face",
-        "FastAPI",
-        "AWS",
-        "React",
-        "LangGraph",
-        "LangChain",
-        "Retrieval-Augmented Generation (RAG)",
-      ],
+  const sectionRef = useRef<HTMLElement>(null);
+  const lineRef = useRef<SVGPathElement>(null);
+  const timelineContainerRef = useRef<HTMLDivElement>(null);
+  const [lineHeight, setLineHeight] = useState(0);
+
+  useEffect(() => {
+    const updateHeight = () => {
+      if (timelineContainerRef.current) {
+        setLineHeight(timelineContainerRef.current.offsetHeight);
+      }
+    };
+    updateHeight();
+    window.addEventListener("resize", updateHeight);
+    return () => window.removeEventListener("resize", updateHeight);
+  }, []);
+
+  useGSAP(
+    () => {
+      const line = lineRef.current;
+      if (!line || lineHeight === 0) return;
+
+      const length = line.getTotalLength();
+      gsap.set(line, { strokeDasharray: length, strokeDashoffset: length });
+
+      gsap.to(line, {
+        strokeDashoffset: 0,
+        ease: "none",
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top 60%",
+          end: "bottom 80%",
+          scrub: 1,
+        },
+      });
+
+      const cards = sectionRef.current?.querySelectorAll<HTMLElement>(".timeline-card");
+      cards?.forEach((card, i) => {
+        const isLeft = i % 2 === 0;
+        gsap.fromTo(
+          card,
+          { opacity: 0, x: isLeft ? -80 : 80 },
+          {
+            opacity: 1,
+            x: 0,
+            duration: 1,
+            ease: "power3.out",
+            scrollTrigger: {
+              trigger: card,
+              start: "top 85%",
+              toggleActions: "play none none none",
+            },
+          }
+        );
+      });
+
+      const dots = sectionRef.current?.querySelectorAll<HTMLElement>(".timeline-dot");
+      dots?.forEach((dot) => {
+        gsap.fromTo(
+          dot,
+          { scale: 0, opacity: 0 },
+          {
+            scale: 1,
+            opacity: 1,
+            duration: 0.5,
+            ease: "back.out(2)",
+            scrollTrigger: {
+              trigger: dot,
+              start: "top 85%",
+              toggleActions: "play none none none",
+            },
+          }
+        );
+      });
+
+      const glowDots = sectionRef.current?.querySelectorAll<HTMLElement>(".dot-glow");
+      glowDots?.forEach((glow) => {
+        gsap.fromTo(
+          glow,
+          { opacity: 0 },
+          {
+            opacity: 1,
+            duration: 0.6,
+            scrollTrigger: {
+              trigger: glow,
+              start: "top 85%",
+              end: "bottom 20%",
+              toggleActions: "play none none reverse",
+            },
+          }
+        );
+      });
     },
-  ];
+    { scope: sectionRef, dependencies: [lineHeight] }
+  );
 
   return (
-    <section id="experience" className="py-20 bg-dark-light/30">
+    <section id="experience" ref={sectionRef} className="section-padding relative">
       <div className="container-custom">
-        <motion.div
-          className="text-center mb-16"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-        >
-          <h2 className="section-title">Work Experience</h2>
-          <p className="text-light/70 max-w-2xl mx-auto mt-4">
-            My professional journey in software development and AI integration.
-          </p>
-        </motion.div>
+        <div className="text-center mb-20">
+          <GradientText className="text-5xl md:text-6xl font-bold font-heading">
+            Experience
+          </GradientText>
+        </div>
 
-        <div className="relative">
-          {/* Timeline line */}
-          <div className="absolute left-0 md:left-1/2 top-0 bottom-0 w-px bg-primary/30 transform md:translate-x-[-0.5px]"></div>
+        <div className="relative" ref={timelineContainerRef}>
+          <svg
+            className="absolute left-4 md:left-1/2 top-0 w-[2px] md:-translate-x-[1px] pointer-events-none"
+            style={{ height: lineHeight || "100%" }}
+            viewBox={`0 0 2 ${lineHeight || 1}`}
+            preserveAspectRatio="none"
+          >
+            <path
+              ref={lineRef}
+              d={`M1,0 L1,${lineHeight || 1}`}
+              stroke="#8B5CF6"
+              strokeWidth="2"
+              strokeLinecap="round"
+              fill="none"
+            />
+          </svg>
 
-          {/* Experience items */}
-          {experiences.map((exp, index) => (
-            <motion.div
-              key={exp.id}
-              className={`relative mb-12 md:mb-24 ${
-                index % 2 === 0
-                  ? "md:pr-12 md:text-right md:ml-auto md:mr-auto"
-                  : "md:pl-12 md:ml-auto md:mr-auto"
-              } md:w-1/2`}
-              initial={{ opacity: 0, y: 50 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-            >
-              {/* Timeline dot */}
-              <div
-                className={`absolute top-0 ${
-                  index % 2 === 0
-                    ? "left-0 md:right-0 md:translate-x-1/2"
-                    : "left-0 md:left-0 md:-translate-x-1/2"
-                } w-5 h-5 rounded-full bg-primary z-10 transform md:translate-y-1.5`}
-              ></div>
+          <div className="space-y-16 md:space-y-24">
+            {timeline.map((entry, i) => {
+              const isLeft = i % 2 === 0;
 
-              {/* Content card */}
-              <motion.div
-                className="bg-dark-light p-6 rounded-xl shadow-lg ml-8 md:ml-0"
-                whileHover={{ y: -5 }}
-                transition={{ duration: 0.3 }}
-              >
-                <div className="flex items-center gap-2 text-primary mb-2">
-                  <Briefcase size={18} />
-                  <h3 className="text-xl font-bold">{exp.position}</h3>
-                </div>
+              return (
+                <div key={entry.period} className="relative">
+                  <div
+                    className={`absolute left-4 md:left-1/2 top-6 -translate-x-1/2 z-10`}
+                  >
+                    <div className="timeline-dot relative w-4 h-4 rounded-full bg-primary border-2 border-dark">
+                      <div className="dot-glow absolute inset-[-6px] rounded-full bg-primary/30 blur-sm opacity-0" />
+                    </div>
+                  </div>
 
-                <h4 className="text-lg font-semibold mb-1">{exp.company}</h4>
-
-                <div className="flex items-center gap-2 text-light/60 mb-4">
-                  <Calendar size={16} />
-                  <span>{exp.period}</span>
-                </div>
-
-                <ul className="space-y-2 mb-4">
-                  {exp.description.map((item, i) => (
-                    <li key={i} className="text-light/80 flex items-start ">
-                      <span className="inline-block w-1.5 h-1.5 rounded-full bg-primary mt-2 mr-2"></span>
-                      <span className="flex text-left">{item}</span>
-                    </li>
-                  ))}
-                </ul>
-
-                <div className="flex flex-wrap gap-2">
-                  {exp.technologies.map((tech, i) => (
-                    <span
-                      key={i}
-                      className="px-3 py-1 bg-dark-lighter rounded-full text-xs font-medium text-primary"
+                  <div
+                    className={`timeline-card pl-12 md:pl-0 md:w-[calc(50%-2rem)] ${
+                      isLeft
+                        ? "md:mr-auto md:pr-8"
+                        : "md:ml-auto md:pl-8"
+                    }`}
+                  >
+                    <SpotlightCard
+                      className="rounded-xl bg-dark-light/60 backdrop-blur-sm p-6 md:p-8 border border-white/5"
+                      spotlightColor="rgba(139, 92, 246, 0.12)"
+                      borderColor="rgba(139, 92, 246, 0.3)"
                     >
-                      {tech}
-                    </span>
-                  ))}
+                      <div className="space-y-4">
+                        <div>
+                          <h3 className="text-xl md:text-2xl font-bold text-white">
+                            {entry.title}
+                          </h3>
+                          <p className="text-primary font-medium mt-1">
+                            {entry.company}
+                          </p>
+                        </div>
+
+                        <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-light-muted">
+                          <span>{entry.period}</span>
+                          <span className="w-1 h-1 rounded-full bg-light-muted" />
+                          <span>{entry.subtitle}</span>
+                        </div>
+
+                        {entry.achievements.length > 0 && (
+                          <ul className="space-y-2">
+                            {entry.achievements.map((item, j) => (
+                              <li
+                                key={j}
+                                className="flex items-start gap-2 text-light-dark text-sm leading-relaxed"
+                              >
+                                <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-primary flex-shrink-0" />
+                                {item}
+                              </li>
+                            ))}
+                          </ul>
+                        )}
+
+                        {entry.tech.length > 0 && (
+                          <div className="flex flex-wrap gap-2 pt-2">
+                            {entry.tech.map((t) => (
+                              <span
+                                key={t}
+                                className="px-2.5 py-0.5 text-xs font-medium border border-white/10 rounded-full text-light-muted"
+                              >
+                                {t}
+                              </span>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    </SpotlightCard>
+                  </div>
                 </div>
-              </motion.div>
-            </motion.div>
-          ))}
+              );
+            })}
+          </div>
         </div>
       </div>
     </section>

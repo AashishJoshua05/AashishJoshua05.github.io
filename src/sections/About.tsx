@@ -1,157 +1,108 @@
-import { motion } from "framer-motion";
-import { Code, Brain, Rocket, Coffee } from "lucide-react";
+import { useRef } from "react";
+import { useGSAP } from "@gsap/react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import GradientText from "../components/ui/GradientText";
+import SplitText from "../components/ui/SplitText";
+import SpotlightCard from "../components/ui/SpotlightCard";
+
+gsap.registerPlugin(ScrollTrigger);
+
+const stats = [
+  { value: "1.5+", label: "Years Experience" },
+  { value: "10K+", label: "Resumes/Day" },
+  { value: "20%", label: "Token Reduction" },
+  { value: "Sub-2s", label: "P95 Retrieval" },
+];
 
 const About = () => {
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.2,
-      },
-    },
-  };
+  const sectionRef = useRef<HTMLElement>(null);
+  const statsRef = useRef<HTMLDivElement>(null);
 
-  const itemVariants = {
-    hidden: { y: 20, opacity: 0 },
-    visible: {
-      y: 0,
-      opacity: 1,
-      transition: { duration: 0.5 },
+  useGSAP(
+    () => {
+      const cards = statsRef.current?.querySelectorAll(".stat-card");
+      if (!cards?.length) return;
+
+      gsap.fromTo(
+        cards,
+        { opacity: 0, y: 60, scale: 0.95 },
+        {
+          opacity: 1,
+          y: 0,
+          scale: 1,
+          stagger: 0.12,
+          duration: 0.7,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: statsRef.current,
+            start: "top 85%",
+            toggleActions: "play none none none",
+          },
+        }
+      );
     },
-  };
+    { scope: sectionRef }
+  );
 
   return (
-    <section id="about" className="py-20 bg-dark-light/30">
+    <section
+      id="about"
+      ref={sectionRef}
+      className="bg-[#0a0a0a] section-padding"
+    >
       <div className="container-custom">
-        <motion.div
-          className="text-center mb-16"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
+        <div className="mb-16">
+          <GradientText
+            text="About"
+            className="text-5xl md:text-6xl font-heading font-bold"
+            from="#8B5CF6"
+            to="#06b6d4"
+            animate
+          />
+        </div>
+
+        <div className="max-w-4xl mb-8">
+          <SplitText
+            text="Backend and AI engineer with 1.5+ years of production experience building scalable LLM systems. Built Hyrra — an agentic AI recruiter processing 10K+ resumes/day — at AidenAI, where I own the retrieval stack, ingestion pipeline, and multi-tenant backend."
+            className="text-lg md:text-xl leading-relaxed text-[#e0e0e0]"
+            splitBy="words"
+            stagger={0.02}
+            animateFrom={{ opacity: 0, y: 20 }}
+            animateTo={{ duration: 0.4, ease: "power2.out" }}
+          />
+        </div>
+
+        <div className="max-w-4xl mb-20">
+          <SplitText
+            text="I work across Python, FastAPI, Qdrant, PostgreSQL, and Azure, and am comfortable going from a system design conversation to shipping the thing."
+            className="text-lg md:text-xl leading-relaxed text-light-dark"
+            splitBy="words"
+            stagger={0.02}
+            delay={0.3}
+            animateFrom={{ opacity: 0, y: 20 }}
+            animateTo={{ duration: 0.4, ease: "power2.out" }}
+          />
+        </div>
+
+        <div
+          ref={statsRef}
+          className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6"
         >
-          <h2 className="section-title">About Me</h2>
-        </motion.div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          <motion.div
-            initial={{ opacity: 0, x: -50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-          >
-            <div className="relative">
-              <motion.div
-                className="w-full h-[400px] rounded-2xl overflow-hidden"
-                whileHover={{ scale: 1.02 }}
-                transition={{ duration: 0.3 }}
-              >
-                <img
-                  src="/Vakesy.JPEG"
-                  alt="Profile"
-                  className="w-full h-full object-fit"
-                />
-              </motion.div>
-
-              {/* Decorative elements */}
-              <motion.div
-                className="absolute -bottom-5 -left-5 w-24 h-24 bg-primary/20 rounded-lg"
-                animate={{ rotate: 360 }}
-                transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-              />
-              <motion.div
-                className="absolute -top-5 -right-5 w-32 h-32 bg-primary/10 rounded-full"
-                animate={{ scale: [1, 1.1, 1] }}
-                transition={{
-                  duration: 5,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                }}
-              />
-            </div>
-          </motion.div>
-
-          <motion.div
-            variants={containerVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-          >
-            <motion.h3
-              className="text-2xl md:text-3xl font-bold mb-4"
-              variants={itemVariants}
+          {stats.map((stat) => (
+            <SpotlightCard
+              key={stat.label}
+              className="stat-card rounded-xl bg-dark-light/50 border border-[#1e1e1e] p-6 md:p-8 text-center"
             >
-              AI Software Engineer with a passion for building intelligent
-              solutions
-            </motion.h3>
-
-            <motion.p className="text-light/80 mb-6" variants={itemVariants}>
-              I'm an AI/ML engineer and full-stack developer with expertise in
-              building intelligent, scalable applications. With experience in
-              fine-tuning large language models, retrieval-augmented generation
-              (RAG), and multi-agent architectures, I develop AI-driven
-              solutions that enhance automation and decision-making.
-            </motion.p>
-
-            <motion.p className="text-light/80 mb-8" variants={itemVariants}>
-              My skill set spans the entire development stack—from crafting
-              responsive, dynamic UIs with React and Tailwind CSS to
-              architecting robust back-end systems with Python, and
-              FastAPI. I specialize in integrating AI into applications,
-              optimizing model performance, and deploying scalable solutions on
-              AWS. Passionate about combining AI with intuitive design, I focus
-              on delivering seamless user experiences powered by cutting-edge
-              technology.
-            </motion.p>
-
-            <motion.div
-              className="grid grid-cols-2 gap-4"
-              variants={itemVariants}
-            >
-              <div className="flex items-start gap-3">
-                <div className="p-2 bg-primary/20 rounded-lg text-primary">
-                  <Code size={20} />
-                </div>
-                <div>
-                  <h4 className="font-semibold">Full Stack</h4>
-                  <p className="text-sm text-light/70">
-                    End-to-end development
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex items-start gap-3">
-                <div className="p-2 bg-primary/20 rounded-lg text-primary">
-                  <Brain size={20} />
-                </div>
-                <div>
-                  <h4 className="font-semibold">AI Integration</h4>
-                  <p className="text-sm text-light/70">Smart solutions</p>
-                </div>
-              </div>
-
-              <div className="flex items-start gap-3">
-                <div className="p-2 bg-primary/20 rounded-lg text-primary">
-                  <Rocket size={20} />
-                </div>
-                <div>
-                  <h4 className="font-semibold">Optimization</h4>
-                  <p className="text-sm text-light/70">Performance focused</p>
-                </div>
-              </div>
-
-              <div className="flex items-start gap-3">
-                <div className="p-2 bg-primary/20 rounded-lg text-primary">
-                  <Coffee size={20} />
-                </div>
-                <div>
-                  <h4 className="font-semibold">Problem Solver</h4>
-                  <p className="text-sm text-light/70">Creative solutions</p>
-                </div>
-              </div>
-            </motion.div>
-          </motion.div>
+              <GradientText
+                text={stat.value}
+                className="text-3xl md:text-4xl font-heading font-bold block mb-2"
+                from="#8B5CF6"
+                to="#06b6d4"
+              />
+              <p className="text-sm text-light-muted">{stat.label}</p>
+            </SpotlightCard>
+          ))}
         </div>
       </div>
     </section>

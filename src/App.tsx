@@ -1,41 +1,55 @@
+import { useState, useEffect } from "react";
+import { useReducedMotion } from "./hooks/useReducedMotion";
+import SmoothScroll from "./components/SmoothScroll";
+import CustomCursor from "./components/CustomCursor";
+import GrainOverlay from "./components/GrainOverlay";
+import Preloader from "./components/Preloader";
+import ClickSpark from "./components/ui/ClickSpark";
 import Navbar from "./components/Navbar";
 import Hero from "./sections/Hero";
 import About from "./sections/About";
 import Projects from "./sections/Projects";
 import Experience from "./sections/Experience";
 import Skills from "./sections/Skills";
-// import Testimonials from "./sections/Testimonials";
 import Contact from "./sections/Contact";
-import Footer from "./components/Footer";
-import BackgroundAnimation from "./components/BackgroundAnimation";
 
 function App() {
-  return (
-    <div className="relative min-h-screen bg-dark text-light overflow-hidden">
-      {/* Background is at z-0 */}
-      <BackgroundAnimation />
+  const reducedMotion = useReducedMotion();
+  const [isLoading, setIsLoading] = useState(!reducedMotion);
 
-      {/* Navbar should be at highest z-index */}
-      <div className="relative z-50">
-        <Navbar />
-      </div>
+  useEffect(() => {
+    if (reducedMotion) setIsLoading(false);
+  }, [reducedMotion]);
 
-      {/* Main content is at z-10, above background but below navbar */}
-      <main className="relative z-10">
+  const content = (
+    <>
+      {!reducedMotion && <CustomCursor />}
+      {!reducedMotion && <GrainOverlay />}
+      <Navbar />
+
+      <main>
         <Hero />
         <About />
         <Projects />
         <Experience />
         <Skills />
-        {/* <Testimonials /> */}
         <Contact />
       </main>
+    </>
+  );
 
-      {/* Footer should also be above background */}
-      <div className="relative z-10">
-        <Footer />
-      </div>
-    </div>
+  return (
+    <>
+      {isLoading && <Preloader onComplete={() => setIsLoading(false)} />}
+
+      {reducedMotion ? (
+        content
+      ) : (
+        <SmoothScroll>
+          <ClickSpark>{content}</ClickSpark>
+        </SmoothScroll>
+      )}
+    </>
   );
 }
 
